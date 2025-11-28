@@ -1,0 +1,59 @@
+{
+  "schema_version": "v0.2.0",
+  "record_types": {
+    "customers": {
+      "name": "Customers",
+      "is_loadable": true,
+      "fields": {
+        "name": {
+          "name": "Name",
+          "is_required": true,
+          "type": "text",
+          "text": {
+            "min_length": 1
+          }
+        },
+        "email": {
+          "name": "Email",
+          "is_required": true,
+          "type": "text"
+        },
+        "company": {
+          "name": "Company",
+          "type": "text"
+        },
+        "item_url_field": {
+          "name": "Link to item",
+          "type": "text"
+        }
+      }
+    },
+    "maple_kb": {
+      "name": "Maple KB Articles",
+      "is_loadable": true,
+      "fields": {
+        "title": {
+          "name": "Title",
+          "is_required": true,
+          "type": "text",
+          "text": {
+            "min_length": 1
+          }
+        },
+        "content": {
+          "name": "Content",
+          "is_required": true,
+          "type": "rich_text"
+        },
+        "category": {
+          "name": "Category",
+          "type": "text"
+        },
+        "item_url_field": {
+          "name": "Link to item",
+          "type": "text"
+        }
+      }
+    }
+  }
+}
