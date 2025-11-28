@@ -5,13 +5,13 @@ version: "2"
 # For more information about manifests, see https://developer.devrev.ai/public/snapin-development/references/manifest.
 
 # General information about the snap-in, which you can change to your liking.
-name: Todo
-description: An Airdrop snap-in for syncing data between Todo and DevRev
+name: Maple data
+description: An Airdrop snap-in for syncing data from Maple data to DevRev
 
 # The name of the service account that your snap-in will use in DevRev.
 # You can change the display name value to your liking.
 service_account:
-  display_name: Todo Bot
+  display_name: Maple Data Bot
 
 # Functions that the snap-in exposes.
 # The names of the functions should be in sync with their references in the 'imports' and
@@ -19,9 +19,9 @@ service_account:
 # You can freely change the descriptions of the functions.
 functions:
   - name: extraction
-    description: Airdrop extraction function for Todo
+    description: Airdrop extraction function for Maple data
   - name: loading
-    description: Airdrop loading function for Todo
+    description: Airdrop loading function for Maple data
 
 # The types of connections that the snap-in supports.
 # If an external system supports OAuth, then you should use that.
@@ -34,9 +34,9 @@ keyring_types:
 
     # Connection details that are showed when creating a connection in the DevRev app.
     # You can freely change them, but the external system name should have the first letter capitalized.
-    name: Todo Connection
-    description: Connection details for authenticating with Todo
-    external_system_name: Todo
+    name: Maple Data Connection
+    description: Connection details for authenticating with Maple data
+    external_system_name: Maple Data
 
     # Configuration for passing the secret to the external system, if necessary.
     # See https://github.com/devrev/snap-in-examples/blob/main/13-keyring-type/custom-keyring-type-basic.yaml
@@ -62,9 +62,9 @@ keyring_types:
 imports:
   # The slug is the machine-readable name for the import.
   # In the example below, it's automatically taken from the repository name if you used the template.
-  - slug: airdrop-todo-snap-in
-    display_name: Todo
-    description: Import data from Todo using Airdrop
+  - slug: airdrop-maple-data-snap-in
+    display_name: Maple Data
+    description: Import data from Maple data using Airdrop
 
     # The extractor and loader functions specify which functions from the section
     # 'functions' above should be called when extracting data from an external

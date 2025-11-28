@@ -1,57 +1,36 @@
-import { ExternalSyncUnit, NormalizedAttachment, NormalizedItem } from '@devrev/ts-adaas';
-import { ExternalTodoList, ExternalTodo, ExternalUser, ExternalAttachment } from './types';
+import { ExternalSyncUnit, NormalizedItem } from '@devrev/ts-adaas';
+import { ExternalCustomer, ExternalMapleKB } from './types';
 
-// TODO: Replace with your actual normalization functions that will be used to
-// normalize the data received from the external system. You can modify the
-// normalization functions to suit your needs. For example, you might want to
-// include additional fields or change the structure of the normalized item.
-export function normalizeTodoList(item: ExternalTodoList): ExternalSyncUnit {
-  return {
-    id: item.id,
-    name: item.name,
-    description: item.description,
-    item_count: item.item_count,
-    item_type: item.item_type,
-  };
-}
+// Normalization functions for Maple data
 
-export function normalizeTodo(item: ExternalTodo): NormalizedItem {
-  // createItemUrl function returns the url that points to this item in the external system.
-  // TODO: Adjust this function to your external system.
-  const createItemUrl = (id: string) => `https://external-system.com/todos/${id}`;
+export function normalizeCustomer(item: ExternalCustomer): NormalizedItem {
+  const createItemUrl = (id: string) => `https://maple-data.com/customers/${id}`;
 
   return {
     id: item.id,
     created_date: item.created_date,
     modified_date: item.modified_date,
     data: {
-      body: item.body,
-      creator: item.creator,
-      owner: item.owner,
-      title: item.title,
-      item_url_field: createItemUrl(item.id), // Url that points to the item in the external system.
-    },
-  };
-}
-
-export function normalizeUser(item: ExternalUser): NormalizedItem {
-  return {
-    id: item.id,
-    created_date: item.created_date,
-    modified_date: item.modified_date,
-    data: {
-      email: item.email,
       name: item.name,
+      email: item.email,
+      company: item.company,
+      item_url_field: createItemUrl(item.id),
     },
   };
 }
 
-export function normalizeAttachment(item: ExternalAttachment): NormalizedAttachment {
+export function normalizeMapleKB(item: ExternalMapleKB): NormalizedItem {
+  const createItemUrl = (id: string) => `https://maple-data.com/kb/${id}`;
+
   return {
-    url: item.url,
     id: item.id,
-    file_name: item.file_name,
-    author_id: item.author_id,
-    parent_id: item.parent_id,
+    created_date: item.created_date,
+    modified_date: item.modified_date,
+    data: {
+      title: item.title,
+      content: item.content,
+      category: item.category,
+      item_url_field: createItemUrl(item.id),
+    },
   };
 }

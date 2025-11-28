@@ -1,33 +1,37 @@
 {
   "schema_version": "v0.2.0",
   "record_types": {
-    "todos": {
-      "name": "Todos",
+    "customers": {
+      "name": "Customers",
       "is_loadable": true,
       "fields": {
-        "body": {
-          "name": "body",
+        "name": {
+          "name": "Name",
           "is_required": true,
-          "type": "rich_text"
-        },
-        "creator": {
-          "is_required": true,
-          "type": "reference",
-          "reference": {
-            "refers_to": {
-              "#record:users": {}
-            }
+          "type": "text",
+          "text": {
+            "min_length": 1
           }
         },
-        "owner": {
+        "email": {
+          "name": "Email",
           "is_required": true,
-          "type": "reference",
-          "reference": {
-            "refers_to": {
-              "#record:users": {}
-            }
-          }
+          "type": "text"
         },
+        "company": {
+          "name": "Company",
+          "type": "text"
+        },
+        "item_url_field": {
+          "name": "Link to item",
+          "type": "text"
+        }
+      }
+    },
+    "maple_kb": {
+      "name": "Maple KB Articles",
+      "is_loadable": true,
+      "fields": {
         "title": {
           "name": "Title",
           "is_required": true,
@@ -36,27 +40,18 @@
             "min_length": 1
           }
         },
+        "content": {
+          "name": "Content",
+          "is_required": true,
+          "type": "rich_text"
+        },
+        "category": {
+          "name": "Category",
+          "type": "text"
+        },
         "item_url_field": {
           "name": "Link to item",
           "type": "text"
-        }
-      }
-    },
-    "users": {
-      "name": "Users",
-      "fields": {
-        "email": {
-          "name": "Email",
-          "is_required": true,
-          "type": "text"
-        },
-        "name": {
-          "name": "Name",
-          "is_required": true,
-          "type": "text",
-          "text": {
-            "min_length": 1
-          }
         }
       }
     }

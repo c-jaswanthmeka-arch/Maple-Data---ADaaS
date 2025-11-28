@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix -- .",
-    "build": "rimraf ./dist && tsc",
+    "build": "rimraf ./dist && tsc && npm run copy-data-files",
+    "copy-data-files": "mkdir -p dist/functions/external-system/maple_kb && cp -r src/functions/external-system/customers.json dist/functions/external-system/ 2>/dev/null || true && cp -r src/functions/external-system/maple_kb/*.json dist/functions/external-system/maple_kb/ 2>/dev/null || true && cp -r src/functions/external-system/maple_kb/*.md dist/functions/external-system/maple_kb/ 2>/dev/null || true",
     "build:watch": "tsc --watch",
     "prepackage": "npm run build",
     "package": "tar -cvzf build.tar.gz dist package.json package-lock.json .npmrc",

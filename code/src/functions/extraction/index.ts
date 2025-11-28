@@ -2,21 +2,16 @@ import { AirdropEvent, EventType, spawn } from '@devrev/ts-adaas';
 
 import initialDomainMapping from '../external-system/initial_domain_mapping.json';
 
-// TODO: Replace with your state interface that will keep track of the
-// extraction progress. For example, the page number, the number of items
-// processed, if the extraction is completed, etc.
+// State interface to track extraction progress
 export interface ExtractorState {
-  todos: { completed: boolean };
-  users: { completed: boolean };
-  attachments: { completed: boolean };
+  customers: { completed: boolean };
+  maple_kb: { completed: boolean };
 }
 
-// TODO: Replace with your initial state that will be passed to the worker.
-// This state will be used as a starting point for the extraction process.
+// Initial state for extraction process
 export const initialExtractorState: ExtractorState = {
-  todos: { completed: false },
-  users: { completed: false },
-  attachments: { completed: false },
+  customers: { completed: false },
+  maple_kb: { completed: false },
 };
 
 function getWorkerPerExtractionPhase(event: AirdropEvent) {

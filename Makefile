@@ -20,7 +20,11 @@ auth:
 .PHONY: auth
 
 deploy: auth
-	./code/scripts/deploy.sh
+	@if [ -z "$(SLUG)" ]; then \
+		echo "Error: Package slug is required. Usage: make deploy SLUG=<package-slug>"; \
+		exit 1; \
+	fi
+	./code/scripts/deploy.sh $(SLUG)
 .PHONY: deploy
 
 # Removes the latest snap-in from the org.
