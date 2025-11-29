@@ -4,39 +4,57 @@ import { HttpClient } from '../../external-system/http-client';
 
 processTask({
   task: async ({ adapter }) => {
-    const httpClient = new HttpClient(adapter.event);
+    try {
+      console.log('=== Starting External Sync Units Extraction ===');
+      console.log('Event payload:', JSON.stringify(adapter.event.payload, null, 2));
+      
+      const httpClient = new HttpClient(adapter.event);
 
-    // Fetch customers and maple kb to determine sync units
-    const customers = await httpClient.getCustomers();
-    const mapleKB = await httpClient.getMapleKB();
-    
-    console.log('Fetched customers:', customers.length);
-    console.log('Fetched Maple KB articles:', mapleKB.length);
+      // Fetch customers and maple kb to determine sync units
+      console.log('Fetching customers...');
+      const customers = await httpClient.getCustomers();
+      console.log('Fetched customers:', customers.length);
+      
+      console.log('Fetching Maple KB...');
+      const mapleKB = await httpClient.getMapleKB();
+      console.log('Fetched Maple KB articles:', mapleKB.length);
 
-    // Create sync units for customers and maple kb
-    const externalSyncUnits: ExternalSyncUnit[] = [
-      {
-        id: 'customers',
-        name: 'Customers',
-        description: 'Customer data from Maple data',
-        item_count: customers.length,
-        item_type: 'customers',
-      },
-      {
-        id: 'maple-kb',
-        name: 'Maple KB',
-        description: 'Knowledge base articles from Maple data',
-        item_count: mapleKB.length,
-        item_type: 'maple_kb',
-      },
-    ];
-    
-    console.log('Created external sync units:', externalSyncUnits);
-    console.log('Number of sync units:', externalSyncUnits.length);
+      // Create sync units for customers and maple kb
+      const externalSyncUnits: ExternalSyncUnit[] = [
+        {
+          id: 'customers',
+          name: 'Customers',
+          description: 'Customer data from Maple data',
+          item_count: customers.length,
+          item_type: 'customers',
+        },
+        {
+          id: 'maple-kb',
+          name: 'Maple KB',
+          description: 'Knowledge base articles from Maple data',
+          item_count: mapleKB.length,
+          item_type: 'maple_kb',
+        },
+      ];
+      
+      console.log('Created external sync units:', JSON.stringify(externalSyncUnits, null, 2));
+      console.log('Number of sync units:', externalSyncUnits.length);
 
-    await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsDone, {
-      external_sync_units: externalSyncUnits,
-    });
+      await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsDone, {
+        external_sync_units: externalSyncUnits,
+      });
+    } catch (error: any) {
+      console.error('=== ERROR in External Sync Units Extraction ===');
+      console.error('Error details:', error);
+      console.error('Error message:', error instanceof Error ? error.message : String(error));
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+      
+      await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsError, {
+        error: {
+          message: error instanceof Error ? error.message : String(error),
+        },
+      });
+    }
   },
   onTimeout: async ({ adapter }) => {
     await adapter.emit(ExtractorEventType.ExtractionExternalSyncUnitsError, {

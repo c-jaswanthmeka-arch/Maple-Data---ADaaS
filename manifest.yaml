@@ -47,13 +47,8 @@ keyring_types:
       secret_transform: ".token"
       fields:
         - id: token
-          name: Token
-          description: Example API token
-
-      # Airdrop will call the URL you set with the token to verify its validity.
-      # You need to specify an endpoint in your external system that requires authentication
-      # and ideally also checks if the token has all the required scopes.
-      # TODO: Update the token verification URL to use an actual authenticated endpoint of your external system.
+          name: ZIP Artifact ID
+          description: 'Enter the artifact ID of the ZIP file containing customers.json and maple_kb folder. Upload your ZIP file to DevRev as an artifact first, then enter the artifact ID here (e.g., "don:core:dvrv-us-1:devo/YOUR_ORG:artifact/ARTIFACT_ID").'
       token_verification:
         url: https://app.devrev.ai/favicon.ico
         method: GET

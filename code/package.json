@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix -- .",
     "build": "rimraf ./dist && tsc && npm run copy-data-files",
-    "copy-data-files": "mkdir -p dist/functions/external-system/maple_kb && cp -r src/functions/external-system/customers.json dist/functions/external-system/ 2>/dev/null || true && cp -r src/functions/external-system/maple_kb/*.json dist/functions/external-system/maple_kb/ 2>/dev/null || true && cp -r src/functions/external-system/maple_kb/*.md dist/functions/external-system/maple_kb/ 2>/dev/null || true",
+    "copy-data-files": "echo 'No embedded data files to copy - data comes from ZIP file'",
     "build:watch": "tsc --watch",
     "prepackage": "npm run build",
     "package": "tar -cvzf build.tar.gz dist package.json package-lock.json .npmrc",
@@ -33,6 +33,7 @@
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
+    "@types/adm-zip": "^0.5.5",
     "babel-jest": "^29.4.2",
     "body-parser": "^1.20.3",
     "dotenv": "^16.0.3",
@@ -63,6 +64,7 @@
     "dotenv": "^16.0.3",
     "jiti": "2.5.1",
     "js-jsonl": "^1.1.1",
-    "yargs": "^17.6.2"
+    "yargs": "^17.6.2",
+    "adm-zip": "^0.5.16"
   }
 }

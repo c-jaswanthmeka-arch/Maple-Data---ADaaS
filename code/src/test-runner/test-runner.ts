@@ -37,6 +37,7 @@ export const testRunner = async ({ functionName, fixturePath }: TestRunnerProps)
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const eventFixture = require(`../fixtures/${fixturePath}`);
 
+
   if (env.parsed) {
     await run(addCredentials(eventFixture, env.parsed));
   } else {
