@@ -17,3 +17,14 @@ the name according to Step 2 above.
 
 While developing the Airdrop snap-in, make sure to refer to the
 [Airdrop snap-in documentation](https://developer.devrev.ai/public/snapin-development/adaas/).
+
+## Uploading ZIP Files
+
+This snap-in requires a ZIP file containing `customers.json` and `maple_kb` data. To upload the ZIP file and get the artifact ID:
+
+1. **Quick Start**: See [ZIP_UPLOAD_GUIDE.md](./ZIP_UPLOAD_GUIDE.md) for detailed instructions
+2. **Quick Command**: 
+   ```bash
+   devrev artifacts upload ~/Desktop/maple-data.zip --config-set default
+   ```
+3. Copy the returned artifact ID and paste it into the "ZIP Artifact ID" field when creating the Airdrop connection
