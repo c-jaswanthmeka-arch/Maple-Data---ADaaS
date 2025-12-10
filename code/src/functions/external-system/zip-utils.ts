@@ -86,3 +86,108 @@ export function readMarkdownFromZip(extractPath: string, filename: string): stri
   }
 }
 
+/**
+ * Reads maple_parts.json from the extracted ZIP directory
+ * @param extractPath Path to the extracted ZIP directory
+ * @returns Parsed parts data or null if file doesn't exist
+ */
+export function readPartsFromZip(extractPath: string): any[] | null {
+  const partsPath = join(extractPath, 'maple_parts.json');
+  
+  if (!existsSync(partsPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(partsPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading maple_parts.json from ZIP:', error);
+    return null;
+  }
+}
+
+/**
+ * Reads maple_tickets.json from the extracted ZIP directory
+ * @param extractPath Path to the extracted ZIP directory
+ * @returns Parsed tickets data or null if file doesn't exist
+ */
+export function readTicketsFromZip(extractPath: string): any[] | null {
+  const ticketsPath = join(extractPath, 'maple_tickets.json');
+  
+  if (!existsSync(ticketsPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(ticketsPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading maple_tickets.json from ZIP:', error);
+    return null;
+  }
+}
+
+/**
+ * Reads maple_issues.json from the extracted ZIP directory
+ * @param extractPath Path to the extracted ZIP directory
+ * @returns Parsed issues data or null if file doesn't exist
+ */
+export function readIssuesFromZip(extractPath: string): any[] | null {
+  const issuesPath = join(extractPath, 'maple_issues.json');
+  
+  if (!existsSync(issuesPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(issuesPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading maple_issues.json from ZIP:', error);
+    return null;
+  }
+}
+
+/**
+ * Reads maple_comments.json from the extracted ZIP directory
+ * @param extractPath Path to the extracted ZIP directory
+ * @returns Parsed comments data or null if file doesn't exist
+ */
+export function readCommentsFromZip(extractPath: string): any[] | null {
+  const commentsPath = join(extractPath, 'maple_comments.json');
+  
+  if (!existsSync(commentsPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(commentsPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading maple_comments.json from ZIP:', error);
+    return null;
+  }
+}
+
+/**
+ * Reads users.json from the extracted ZIP directory
+ * @param extractPath Path to the extracted ZIP directory
+ * @returns Parsed users data or null if file doesn't exist
+ */
+export function readUsersFromZip(extractPath: string): any[] | null {
+  const usersPath = join(extractPath, 'users.json');
+  
+  if (!existsSync(usersPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(usersPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading users.json from ZIP:', error);
+    return null;
+  }
+}
+

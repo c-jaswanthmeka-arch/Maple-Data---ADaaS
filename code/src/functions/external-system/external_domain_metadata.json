@@ -28,8 +28,35 @@
         }
       }
     },
-    "maple_kb": {
-      "name": "Maple KB Articles",
+"maple_kb": {
+  "name": "Maple KB Articles",
+  "is_loadable": true,
+  "fields": {
+    "title": {
+      "name": "Title",
+      "is_required": true,
+      "type": "text",
+      "text": {
+        "min_length": 1
+      }
+    },
+    "content": {
+      "name": "Content",
+      "is_required": true,
+      "type": "rich_text"
+    },
+    "category": {
+      "name": "Category",
+      "type": "text"
+    },
+    "item_url_field": {
+      "name": "Link to item",
+      "type": "text"
+    }
+  }
+},
+    "parts": {
+      "name": "Parts",
       "is_loadable": true,
       "fields": {
         "title": {
@@ -40,17 +67,260 @@
             "min_length": 1
           }
         },
-        "content": {
-          "name": "Content",
+        "type": {
+          "name": "Type",
           "is_required": true,
-          "type": "rich_text"
+          "type": "text"
         },
-        "category": {
-          "name": "Category",
+        "parent": {
+          "name": "Parent",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:parts": {}
+            },
+            "reference_type": "parent"
+          }
+        },
+        "owner_id": {
+          "name": "Owner ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {}
+            }
+          }
+        },
+        "description": {
+          "name": "Description",
           "type": "text"
         },
         "item_url_field": {
           "name": "Link to item",
+          "type": "text"
+        }
+      }
+    },
+    "tickets": {
+      "name": "Tickets",
+      "is_loadable": true,
+      "fields": {
+        "subject": {
+          "name": "Subject",
+          "is_required": true,
+          "type": "text",
+          "text": {
+            "min_length": 1
+          }
+        },
+        "description": {
+          "name": "Description",
+          "is_required": false,
+          "type": "rich_text"
+        },
+        "status": {
+          "name": "Status",
+          "is_required": true,
+          "type": "enum",
+          "enum": {
+            "values": [
+              {
+                "key": "New",
+                "name": "New"
+              },
+              {
+                "key": "In Progress",
+                "name": "In Progress"
+              },
+              {
+                "key": "Escalated",
+                "name": "Escalated"
+              },
+              {
+                "key": "Resolved",
+                "name": "Resolved"
+              },
+              {
+                "key": "Closed",
+                "name": "Closed"
+              }
+            ]
+          }
+        },
+        "priority": {
+          "name": "Priority",
+          "is_required": false,
+          "type": "text"
+        },
+        "account_id": {
+          "name": "Account ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:customers": {}
+            }
+          }
+        },
+        "owner_id": {
+          "name": "Owner ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {}
+            }
+          }
+        },
+        "contact_id": {
+          "name": "Contact ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {}
+            }
+          }
+        },
+        "group_id": {
+          "name": "Group ID",
+          "type": "text"
+        },
+        "item_url_field": {
+          "name": "Link to item",
+          "type": "text"
+        }
+      },
+      "stage_diagram": {
+        "controlling_field": "status",
+        "all_transitions_allowed": true,
+        "stages": {
+          "New": {
+            "state": "open"
+          },
+          "In Progress": {
+            "state": "in_progress"
+          },
+          "Escalated": {
+            "state": "in_progress"
+          },
+          "Resolved": {
+            "state": "closed"
+          },
+          "Closed": {
+            "state": "closed"
+          }
+        },
+        "starting_stage": "New"
+      }
+    },
+    "issues": {
+      "name": "Issues",
+      "is_loadable": true,
+      "fields": {
+        "subject": {
+          "name": "Subject",
+          "is_required": true,
+          "type": "text",
+          "text": {
+            "min_length": 1
+          }
+        },
+        "description": {
+          "name": "Description",
+          "is_required": false,
+          "type": "rich_text"
+        },
+        "status": {
+          "name": "Status",
+          "is_required": true,
+          "type": "text"
+        },
+        "impact": {
+          "name": "Impact",
+          "is_required": false,
+          "type": "text"
+        },
+        "owner_id": {
+          "name": "Owner ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {}
+            }
+          }
+        },
+        "related_issue_ids": {
+          "name": "Related Issue IDs",
+          "type": "reference",
+          "collection": {},
+          "reference": {
+            "refers_to": {
+              "#record:issues": {}
+            }
+          }
+        },
+        "item_url_field": {
+          "name": "Link to item",
+          "type": "text"
+        }
+      }
+    },
+    "comments": {
+      "name": "Comments",
+      "is_loadable": true,
+      "fields": {
+        "body": {
+          "name": "Body",
+          "is_required": true,
+          "type": "rich_text"
+        },
+        "parent_id": {
+          "name": "Parent ID",
+          "is_required": true,
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:tickets": {},
+              "#record:issues": {}
+            },
+            "reference_type": "parent"
+          }
+        },
+        "created_by_id": {
+          "name": "Created By ID",
+          "type": "reference",
+          "reference": {
+            "refers_to": {
+              "#record:users": {}
+            }
+          }
+        },
+        "visibility": {
+          "name": "Visibility",
+          "type": "text"
+        }
+      }
+    },
+    "users": {
+      "name": "Users",
+      "is_loadable": true,
+      "fields": {
+        "email": {
+          "name": "Email",
+          "is_required": true,
+          "type": "text"
+        },
+        "full_name": {
+          "name": "Full Name",
+          "is_required": true,
+          "type": "text"
+        },
+        "state": {
+          "name": "State",
+          "is_required": false,
+          "type": "text"
+        },
+        "phone_numbers": {
+          "name": "Phone Numbers",
+          "is_required": false,
           "type": "text"
         }
       }

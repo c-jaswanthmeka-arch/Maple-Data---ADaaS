@@ -1,6 +1,6 @@
 import { AirdropEvent, EventType, spawn } from '@devrev/ts-adaas';
 
-import initialDomainMapping from '../external-system/initial_domain_mapping.json';
+// import initialDomainMapping from '../external-system/initial_domain_mapping.json';
 
 // TODO: If needed, you can replace this with state interface that will keep
 // track of the loading progress.
@@ -33,7 +33,7 @@ const run = async (events: AirdropEvent[]) => {
       event,
       initialState: initialLoaderState,
       workerPath: file,
-      initialDomainMapping,
+      // initialDomainMapping,
 
       // TODO: If needed you can pass additional options to the spawn function.
       // For example timeout of the lambda, batch size, etc.

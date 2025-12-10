@@ -1,12 +1,17 @@
 import { AirdropEvent, ExternalSystemItemLoadingResponse } from '@devrev/ts-adaas';
 import axios from 'axios';
 import { betaSDK, client } from '@devrev/typescript-sdk';
-import { ExternalCustomer, ExternalMapleKB, MapleKBArticleMetadata } from './types';
+import { ExternalCustomer, ExternalMapleKB, ExternalPart, ExternalTicket, ExternalIssue, ExternalComment, ExternalUser, MapleKBArticleMetadata } from './types';
 import {
   extractZip,
   readCustomersFromZip,
   readArticlesMetadataFromZip,
   readMarkdownFromZip,
+  readPartsFromZip,
+  readTicketsFromZip,
+  readIssuesFromZip,
+  readCommentsFromZip,
+  readUsersFromZip,
 } from './zip-utils';
 
 export class HttpClient {
@@ -203,15 +208,32 @@ ${JSON.stringify(connectionData, null, 2)}`;
       const extractedFiles = fs.readdirSync(this.zipExtractPath);
       console.log('Extracted ZIP contents:', extractedFiles);
       
-      // Check for required files
+      // Check for required files (customers and articles)
       const customersExists = fs.existsSync(path.join(this.zipExtractPath, 'customers.json'));
       const mapleKbExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_kb'));
       const articlesExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_kb', 'articles.json'));
       
-      console.log(`customers.json exists: ${customersExists}`);
-      console.log(`maple_kb directory exists: ${mapleKbExists}`);
-      console.log(`maple_kb/articles.json exists: ${articlesExists}`);
+      // Check for optional files (for future use - tickets, issues, comments, parts)
+      const partsExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_parts.json'));
+      const ticketsExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_tickets.json'));
+      const issuesExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_issues.json'));
+      const commentsExists = fs.existsSync(path.join(this.zipExtractPath, 'maple_comments.json'));
       
+      console.log(`=== ZIP File Contents ===`);
+      console.log(`Required files:`);
+      console.log(`  customers.json exists: ${customersExists}`);
+      console.log(`  maple_kb directory exists: ${mapleKbExists}`);
+      console.log(`  maple_kb/articles.json exists: ${articlesExists}`);
+      console.log(`Optional files (will be ignored for now):`);
+      console.log(`  maple_parts.json exists: ${partsExists}`);
+      console.log(`  maple_tickets.json exists: ${ticketsExists}`);
+      console.log(`  maple_issues.json exists: ${issuesExists}`);
+      console.log(`  maple_comments.json exists: ${commentsExists}`);
+      const usersExists = fs.existsSync(path.join(this.zipExtractPath, 'users.json'));
+      console.log(`  users.json exists: ${usersExists}`);
+      
+      // Only validate required files (customers and articles)
+      // Other files in ZIP are ignored for now
       if (!customersExists) {
         throw new Error('customers.json not found in ZIP file root');
       }
@@ -221,6 +243,9 @@ ${JSON.stringify(connectionData, null, 2)}`;
       if (!articlesExists) {
         throw new Error('maple_kb/articles.json not found in ZIP file');
       }
+      
+      // Note: Other files (tickets, issues, comments, parts) are optional and will be ignored
+      // They can be in the ZIP but won't cause errors if missing
     } catch (error) {
       console.error('Error downloading/extracting ZIP file:', error);
       throw error;
@@ -291,6 +316,100 @@ ${JSON.stringify(connectionData, null, 2)}`;
     return articles;
   }
 
+  // Fetch parts from ZIP file
+  async getParts(): Promise<ExternalPart[]> {
+    // Wait for ZIP initialization
+    await this.ensureZipInitialized();
+    
+    if (!this.zipExtractPath) {
+      throw new Error('ZIP file not extracted. Cannot read parts.');
+    }
+    
+    const parts = readPartsFromZip(this.zipExtractPath);
+    if (!parts) {
+      // Parts are optional, return empty array if not found
+      console.log('maple_parts.json not found in ZIP file. Parts will be skipped.');
+      return [];
+    }
+    
+    return parts as ExternalPart[];
+  }
+
+  // Fetch tickets from ZIP file
+  async getTickets(): Promise<ExternalTicket[]> {
+    // Wait for ZIP initialization
+    await this.ensureZipInitialized();
+    
+    if (!this.zipExtractPath) {
+      throw new Error('ZIP file not extracted. Cannot read tickets.');
+    }
+    
+    const tickets = readTicketsFromZip(this.zipExtractPath);
+    if (!tickets) {
+      // Tickets are optional, return empty array if not found
+      console.log('maple_tickets.json not found in ZIP file. Tickets will be skipped.');
+      return [];
+    }
+    
+    return tickets as ExternalTicket[];
+  }
+
+  // Fetch issues from ZIP file
+  async getIssues(): Promise<ExternalIssue[]> {
+    // Wait for ZIP initialization
+    await this.ensureZipInitialized();
+    
+    if (!this.zipExtractPath) {
+      throw new Error('ZIP file not extracted. Cannot read issues.');
+    }
+    
+    const issues = readIssuesFromZip(this.zipExtractPath);
+    if (!issues) {
+      // Issues are optional, return empty array if not found
+      console.log('maple_issues.json not found in ZIP file. Issues will be skipped.');
+      return [];
+    }
+    
+    return issues as ExternalIssue[];
+  }
+
+  // Fetch comments from ZIP file
+  async getComments(): Promise<ExternalComment[]> {
+    // Wait for ZIP initialization
+    await this.ensureZipInitialized();
+    
+    if (!this.zipExtractPath) {
+      throw new Error('ZIP file not extracted. Cannot read comments.');
+    }
+    
+    const comments = readCommentsFromZip(this.zipExtractPath);
+    if (!comments) {
+      // Comments are optional, return empty array if not found
+      console.log('maple_comments.json not found in ZIP file. Comments will be skipped.');
+      return [];
+    }
+    
+    return comments as ExternalComment[];
+  }
+
+  async getUsers(): Promise<ExternalUser[]> {
+    // Wait for ZIP initialization
+    await this.ensureZipInitialized();
+    
+    if (!this.zipExtractPath) {
+      throw new Error('ZIP file not extracted. Cannot read users.');
+    }
+    
+    const users = readUsersFromZip(this.zipExtractPath);
+    if (!users) {
+      // Users are optional, return empty array if not found
+      console.log('users.json not found in ZIP file. Users will be skipped.');
+      return [];
+    }
+    
+    return users as ExternalUser[];
+  }
+
   // TODO: Replace with the actual function to create an item in the external system.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createCustomer(customer: ExternalCustomer): Promise<ExternalSystemItemLoadingResponse> {
@@ -313,5 +432,19 @@ ${JSON.stringify(connectionData, null, 2)}`;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async updateMapleKB(kb: ExternalMapleKB): Promise<ExternalSystemItemLoadingResponse> {
     return { error: 'Could not update Maple KB article in external system.' };
+  }
+
+  // TODO: Replace with the actual function to create an item in the external system.
+  // Note: Parts are created directly in DevRev via the loader, not through this method.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async createPart(part: ExternalPart): Promise<ExternalSystemItemLoadingResponse> {
+    return { error: 'Could not create part in external system.' };
+  }
+
+  // TODO: Replace with the actual function to update an item in the external system.
+  // Note: Parts are updated directly in DevRev via the loader, not through this method.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async updatePart(part: ExternalPart): Promise<ExternalSystemItemLoadingResponse> {
+    return { error: 'Could not update part in external system.' };
   }
 }

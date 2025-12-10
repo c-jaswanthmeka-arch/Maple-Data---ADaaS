@@ -10,7 +10,7 @@ processTask({
       
       const httpClient = new HttpClient(adapter.event);
 
-      // Fetch customers and maple kb to determine sync units
+      // Fetch all data types to determine sync units
       console.log('Fetching customers...');
       const customers = await httpClient.getCustomers();
       console.log('Fetched customers:', customers.length);
@@ -19,21 +19,38 @@ processTask({
       const mapleKB = await httpClient.getMapleKB();
       console.log('Fetched Maple KB articles:', mapleKB.length);
 
-      // Create sync units for customers and maple kb
+      console.log('Fetching tickets...');
+      const tickets = await httpClient.getTickets();
+      console.log('Fetched tickets:', tickets.length);
+
+      console.log('Fetching issues...');
+      const issues = await httpClient.getIssues();
+      console.log('Fetched issues:', issues.length);
+
+      console.log('Fetching parts...');
+      const parts = await httpClient.getParts();
+      console.log('Fetched parts:', parts.length);
+
+      console.log('Fetching comments...');
+      const comments = await httpClient.getComments();
+      console.log('Fetched comments:', comments.length);
+
+      console.log('Fetching users...');
+      const users = await httpClient.getUsers();
+      console.log('Fetched users:', users.length);
+
+      // Calculate total item count
+      const totalItemCount = customers.length + mapleKB.length + tickets.length + 
+                            issues.length + parts.length + comments.length + users.length;
+
+      // Create a single sync unit for all Maple data
       const externalSyncUnits: ExternalSyncUnit[] = [
         {
-          id: 'customers',
-          name: 'Customers',
-          description: 'Customer data from Maple data',
-          item_count: customers.length,
-          item_type: 'customers',
-        },
-        {
-          id: 'maple-kb',
-          name: 'Maple KB',
-          description: 'Knowledge base articles from Maple data',
-          item_count: mapleKB.length,
-          item_type: 'maple_kb',
+          id: 'maple_data',
+          name: 'Maple Data',
+          description: 'All data from Maple data (customers, articles, tickets, issues, parts, comments, users)',
+          item_count: totalItemCount,
+          item_type: 'maple_data',
         },
       ];
       

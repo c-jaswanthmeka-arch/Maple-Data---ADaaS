@@ -11,37 +11,26 @@ const repos = [
 processTask({
   task: async ({ adapter }) => {
     adapter.initializeRepos(repos);
-
+    console.log('=== Starting Metadata Extraction ===');
     // Get the selected external sync unit ID from the event
     const selectedSyncUnitId = adapter.event.payload.event_context?.external_sync_unit_id;
     console.log(`Metadata extraction - Selected sync unit ID: ${selectedSyncUnitId}`);
 
-    // Map sync unit IDs to record types
-    const syncUnitToRecordType: { [key: string]: 'customers' | 'maple_kb' } = {
-      'customers': 'customers',
-      'maple-kb': 'maple_kb',
-    };
-
-    // Filter metadata based on selected sync unit
+    // Return all metadata for maple_data sync unit
     let filteredMetadata: typeof staticExternalDomainMetadata;
     
-    if (selectedSyncUnitId && syncUnitToRecordType[selectedSyncUnitId]) {
-      // Only include the record type for the selected sync unit
-      const selectedRecordType = syncUnitToRecordType[selectedSyncUnitId];
-      filteredMetadata = {
-        schema_version: staticExternalDomainMetadata.schema_version,
-        record_types: {
-          [selectedRecordType]: staticExternalDomainMetadata.record_types[selectedRecordType],
-        } as any,
-      };
-      console.log(`Filtering metadata to: ${selectedRecordType} (sync unit: ${selectedSyncUnitId})`);
+    if (selectedSyncUnitId === 'maple_data') {
+      // Return all metadata for maple_data sync unit
+      filteredMetadata = staticExternalDomainMetadata;
+      console.log('Returning all record types for maple_data sync unit');
     } else {
       // If no sync unit selected or unknown, return all (fallback)
       filteredMetadata = staticExternalDomainMetadata;
-      console.log('No specific sync unit selected, returning all record types');
+      console.log('No specific sync unit selected or unknown, returning all record types');
     }
-
+    console.log('Pushing filtered metadata to repository');
     await adapter.getRepo('external_domain_metadata')?.push([filteredMetadata]);
+    console.log('Emitted metadata extraction done event');
     await adapter.emit(ExtractorEventType.ExtractionMetadataDone);
   },
   onTimeout: async ({ adapter }) => {

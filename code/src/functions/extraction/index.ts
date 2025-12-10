@@ -6,12 +6,22 @@ import initialDomainMapping from '../external-system/initial_domain_mapping.json
 export interface ExtractorState {
   customers: { completed: boolean };
   maple_kb: { completed: boolean };
+  tickets: { completed: boolean };
+  issues: { completed: boolean };
+  parts: { completed: boolean };
+  comments: { completed: boolean };
+  users: { completed: boolean };
 }
 
 // Initial state for extraction process
 export const initialExtractorState: ExtractorState = {
   customers: { completed: false },
   maple_kb: { completed: false },
+  tickets: { completed: false },
+  issues: { completed: false },
+  parts: { completed: false },
+  comments: { completed: false },
+  users: { completed: false },
 };
 
 function getWorkerPerExtractionPhase(event: AirdropEvent) {

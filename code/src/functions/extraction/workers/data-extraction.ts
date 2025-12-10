@@ -1,9 +1,9 @@
 import { ExtractorEventType, processTask } from '@devrev/ts-adaas';
 
-import { normalizeCustomer, normalizeMapleKB } from '../../external-system/data-normalization';
+import { normalizeCustomer, normalizeMapleKB, normalizeTicket, normalizeIssue, normalizePart, normalizeComment, normalizeUser } from '../../external-system/data-normalization';
 import { HttpClient } from '../../external-system/http-client';
 import { ExtractorState } from '../index';
-import { ExternalCustomer, ExternalMapleKB } from '../../external-system/types';
+import { ExternalCustomer, ExternalMapleKB, ExternalTicket, ExternalIssue, ExternalPart, ExternalComment, ExternalUser } from '../../external-system/types';
 
 // Repos for storing extracted data
 const repos = [
@@ -15,11 +15,31 @@ const repos = [
     itemType: 'maple_kb',
     normalize: (item: object) => normalizeMapleKB(item as ExternalMapleKB),
   },
+  {
+    itemType: 'tickets',
+    normalize: (item: object) => normalizeTicket(item as ExternalTicket),
+  },
+  {
+    itemType: 'issues',
+    normalize: (item: object) => normalizeIssue(item as ExternalIssue),
+  },
+  {
+    itemType: 'parts',
+    normalize: (item: object) => normalizePart(item as ExternalPart),
+  },
+  {
+    itemType: 'comments',
+    normalize: (item: object) => normalizeComment(item as ExternalComment),
+  },
+  {
+    itemType: 'users',
+    normalize: (item: object) => normalizeUser(item as ExternalUser),
+  },
 ];
 
 // Item types to extract
 interface ItemTypeToExtract {
-  name: 'customers' | 'maple_kb';
+  name: 'customers' | 'maple_kb' | 'tickets' | 'issues' | 'parts' | 'comments' | 'users';
   extractFunction: (client: HttpClient) => Promise<object[]>;
 }
 
@@ -31,6 +51,26 @@ const itemTypesToExtract: ItemTypeToExtract[] = [
   {
     name: 'maple_kb',
     extractFunction: (client: HttpClient) => client.getMapleKB(),
+  },
+  {
+    name: 'tickets',
+    extractFunction: (client: HttpClient) => client.getTickets(),
+  },
+  {
+    name: 'issues',
+    extractFunction: (client: HttpClient) => client.getIssues(),
+  },
+  {
+    name: 'parts',
+    extractFunction: (client: HttpClient) => client.getParts(),
+  },
+  {
+    name: 'comments',
+    extractFunction: (client: HttpClient) => client.getComments(),
+  },
+  {
+    name: 'users',
+    extractFunction: (client: HttpClient) => client.getUsers(),
   },
 ];
 
@@ -45,25 +85,16 @@ processTask<ExtractorState>({
       const selectedSyncUnitId = adapter.event.payload.event_context?.external_sync_unit_id;
       console.log(`Selected sync unit ID: ${selectedSyncUnitId}`);
 
-      // Map sync unit IDs to item types
-      const syncUnitToItemType: { [key: string]: 'customers' | 'maple_kb' } = {
-        'customers': 'customers',
-        'maple-kb': 'maple_kb',
-      };
-
       // Determine which item types to extract based on selected sync unit
       let itemTypesToExtractNow: ItemTypeToExtract[];
       
-      if (selectedSyncUnitId && syncUnitToItemType[selectedSyncUnitId]) {
-        // Extract only the selected sync unit's data
-        const selectedItemType = syncUnitToItemType[selectedSyncUnitId];
-        itemTypesToExtractNow = itemTypesToExtract.filter(
-          (item) => item.name === selectedItemType
-        );
-        console.log(`Filtering extraction to: ${selectedItemType} (sync unit: ${selectedSyncUnitId})`);
+      if (selectedSyncUnitId === 'maple_data') {
+        // Extract all data types for maple_data sync unit
+        console.log('Extracting all data types for maple_data sync unit');
+        itemTypesToExtractNow = itemTypesToExtract;
       } else {
         // If no sync unit selected or unknown, extract all (fallback)
-        console.log('No specific sync unit selected, extracting all item types');
+        console.log('No specific sync unit selected or unknown, extracting all item types');
         itemTypesToExtractNow = itemTypesToExtract;
       }
 
